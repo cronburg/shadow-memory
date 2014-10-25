@@ -1,7 +1,7 @@
 
 INCLUDE=.
 LIB=.
-EXE=main
+EXE=main merge
 
 all: $(EXE)
 
@@ -13,6 +13,9 @@ shadow.so: shadow.o
 
 main: main.c shadow.h shadow.so
 	gcc -g -I${INCLUDE} -L${LIB} -Wall -Werror -o main main.c -lshadow
+
+merge: merge.c shadow.h shadow.so
+	gcc -g ${FLAGS} -I${INCLUDE} -L${LIB} -Wall -o merge merge.c -lshadow
 
 clean:
 	rm -f *.o *.so $(EXE)

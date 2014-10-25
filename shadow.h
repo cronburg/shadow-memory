@@ -6,6 +6,9 @@
 #define shadow_h__
 
 #include <stddef.h>
+#include <sys/types.h> // TODO: remove
+#include <sys/stat.h>  // TODO: remove
+#include <fcntl.h>     // TODO: remove
 
 // The possible states of memory:
 #define DATA_UNDEF    0x0 // 00 binary
@@ -37,6 +40,8 @@ void shadow_set_meta_bits(ShadowMap* PM, Addr a, U8  mbits);
 // Destroy frees any memory malloc'd as part of the maps.
 void shadow_initialize_map(ShadowMap* PM);
 void shadow_destroy_map(ShadowMap* PM);
+
+void snapshot(ShadowMap* PM);
 
 // Application needs to explicitly determine how system calls are made
 extern void  free(void* addr);

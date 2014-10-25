@@ -29,7 +29,7 @@ SM* get_SM_for_reading(ShadowMap *PM, Addr a) {
 INLINE
 SM* get_SM_for_writing(ShadowMap *PM, Addr a) {
   //SM** sm_p = &PM[a >> 16]; // bits [31..16]
-  SM** sm_p = &(MAP(PM)[a & 0xffff0000]); // bits [31..16]
+  SM** sm_p = &(MAP(PM)[a >> 16]); //& 0xffff0000]); // bits [31..16]
   if (is_DSM(PM, *sm_p))
     *sm_p = copy_for_writing(*sm_p);
   return *sm_p;
@@ -78,5 +78,31 @@ void shadow_destroy_map(ShadowMap* PM) {
   }
   free(MAP(PM));  // free the map array
   free(DMAP(PM)); // free the distinguished map array
+}
+
+FILE* fd = NULL; // TODO: get rid of this
+int snapshot_count = 0; // TODO: get rid of this
+INLINE
+void snapshot(ShadowMap* PM) {
+  int i, j;
+  U8 curr_U8;
+  if (fd == NULL) {
+    fd = fopen("snapshots.dat", "wa");
+  }
+  fprintf(fd, "snapshot%d = ", snapshot_count);
+  for (i = 0; i < KB_64; i++) {
+    
+    fprintf(fd, "[");
+    if (! is_DSM(PM, MAP(PM)[i])) {
+      for (j = 0; j < KB_64; j++) {
+        shadow_get_meta_bits(PM, i*KB_64 + j, &curr_U8);
+        fprintf(fd, "(%d,%x)",   i*KB_64 + j,  curr_U8);
+        if (j != KB_64 - 1)
+          fprintf(fd, ",");
+      }
+    }
+    fprintf(fd, "]\n");
+  }
+  snapshot_count++;
 }
 
