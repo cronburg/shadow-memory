@@ -6,7 +6,7 @@ A robust and scalable shadow memory library based on Valgrind's memcheck / the p
 Julian Seward (2007).
 
 The goal is to have a user-friendly API for working with shadow memory representing
-a user-defined concept. Concepts of particular interest include:
+a user-defined concept. Concepts of particular interest include but are not limited to:
 
 * Software-based memory error detection:
   * Bad memory accesses (e.g. Segmentation Fault inducing semantic bugs)
