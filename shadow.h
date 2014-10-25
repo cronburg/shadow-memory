@@ -12,31 +12,27 @@
 #define DATA_OBJECT  0x1 // 01 binary
 #define DATA_UNDEF   0x2 // 10 binary
 
-#define KB_64        65536
-
-#define INLINE    inline __attribute__((always_inline))
-
 typedef unsigned char U8; //UChar;
 typedef int Addr;
-
-// Secondary Map structure
 typedef struct {
-  U8 mbits[KB_64];
-} SM;
+  // granularity == (shadow_bits / application_bits) e.g. 1 shadow bit per 8 bits of
+  //   application memory is all that is required for determining addressability
+  //   (because memory is byte-addressed)
+  short shadow_bits;        // # of shadow bits corresponding to one map entry
+  short application_bits;   // # of app bits corresponding to one map entry
+  void* map;                // pointer to the primary shadow map
+  void* distinguished_maps; // pointer to distinguished maps
+  short num_distinguished;  // # of distinguished maps
+} ShadowMap;
 
-// Whether or not the given SM is the "distinguished" secondary map
-// UNDEFINED DSM is what all PM entries point to initially before any
-// memory accesses occur. 
-int is_DSM(SM* sm);
+// Two primary shadow map operations (get and set)
+void shadow_get_meta_bits(ShadowMap* PM, Addr a, U8* mbits);
+void shadow_set_meta_bits(ShadowMap* PM, Addr a, U8  mbits);
 
-// Allocates and initializes a new SM
-SM* copy_for_writing(SM* sm);
-
-// Four primary shadow map operations
-SM* get_SM_for_reading(Addr a);
-SM* get_SM_for_writing(Addr a);
-void get_meta_bits(Addr a, U8* mbits);
-void set_meta_bits(Addr a, U8  mbits);
+// Initialize and destroy. Initialize sets up the primary map and any distinguished maps.
+// Destroy frees any memory malloc'd as part of the maps.
+void shadow_initialize_map(ShadowMap* PM);
+void shadow_destroy_map(ShadowMap* PM);
 
 // Application needs to explicitly determine how system calls are made
 extern void* shadow_malloc(size_t size);
