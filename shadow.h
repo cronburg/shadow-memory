@@ -8,9 +8,13 @@
 #include <stddef.h>
 
 // The possible states of memory:
-#define DATA_META    0x0 // 00 binary
-#define DATA_OBJECT  0x1 // 01 binary
-#define DATA_UNDEF   0x2 // 10 binary
+#define DATA_UNDEF    0x0 // 00 binary
+#define DATA_META     0x1 // 01 binary
+//#define DATA_OBJECT     0x2 // 10 binary
+
+#define DATA_UNDEF_8  0x00 // 0000 binary
+#define DATA_META_8   0xff // 1111 binary
+//#define DATA_OBJECT_8     0x2 // 10 binary
 
 typedef unsigned char U8; //UChar;
 typedef int Addr;
