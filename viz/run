@@ -1,0 +1,5 @@
+#!/bin/bash
+tmpdir=`mktemp -d`
+processing-java --output=$tmpdir --force --run --sketch=../viz
+sleep 0.1
+rm -rf $tmpdir

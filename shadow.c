@@ -87,22 +87,23 @@ void snapshot(ShadowMap* PM) {
   int i, j;
   U8 curr_U8;
   if (fd == NULL) {
-    fd = fopen("snapshots.dat", "wa");
+    fd = fopen("viz/snapshots.dat", "wa");
   }
-  fprintf(fd, "snapshot%d = ", snapshot_count);
-  for (i = 0; i < KB_64; i++) {
-    
-    fprintf(fd, "[");
+  fprintf(fd, "snapshots.append(["); //, snapshot_count);
+  fprintf(fd, "[");
+  for (i = 0; i < KB_64; i++) {  
     if (! is_DSM(PM, MAP(PM)[i])) {
       for (j = 0; j < KB_64; j++) {
         shadow_get_meta_bits(PM, i*KB_64 + j, &curr_U8);
-        fprintf(fd, "(%d,%x)",   i*KB_64 + j,  curr_U8);
-        if (j != KB_64 - 1)
-          fprintf(fd, ",");
+        if (curr_U8 != 0x00) {
+          fprintf(fd, "%d",   i*KB_64 + j); //,  curr_U8);
+          if (j != KB_64 - 1)
+            fprintf(fd, ",");
+        }
       }
     }
-    fprintf(fd, "]\n");
   }
+  fprintf(fd, "])\n");
   snapshot_count++;
 }
 
