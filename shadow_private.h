@@ -19,10 +19,10 @@ typedef struct {
 // Whether or not the given SM is the "distinguished" secondary map
 // UNDEFINED DSM is what all PM entries point to initially before any
 // memory accesses occur. 
-int shadow_is_DSM(SM* sm);
+int is_DSM(ShadowMap *PM, SM* sm);
 
 // Allocates and initializes a new SM
-SM* shadow_copy_for_writing(ShadowMap *PM, SM* sm);
+SM* copy_for_writing(SM* sm);
 
 // Secondary Map getters (maps application address to which SM that address is in)
 SM* get_SM_for_reading(ShadowMap *PM, Addr a);
