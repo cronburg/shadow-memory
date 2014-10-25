@@ -12,7 +12,7 @@ void  out_of_memory() {
 
 int main(int argc, char *argv[]) {
   printf("Entering main()\n");
-  copy_for_writing((void*)0);
+  
   printf("Exiting main()\n");
   return 0;
 }

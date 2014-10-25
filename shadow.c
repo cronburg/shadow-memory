@@ -7,8 +7,8 @@
 //static SM distinguished_SM;
 
 int INLINE is_DSM(ShadowMap* PM, SM* sm) {
-  return (sm >= &((SM**)(PM->distinguished_maps)[0]) &&
-          sm <= &((SM**)(PM->distinguished_maps)[PM->num_distinguished - 1]));
+  return (sm >= (((SM**)(PM->distinguished_maps))[0]) &&
+          sm <= (((SM**)(PM->distinguished_maps))[PM->num_distinguished - 1]));
 }
 
 SM* copy_for_writing(SM* dist_SM) {
