@@ -8,8 +8,8 @@
 
 INLINE
 int is_DSM(ShadowMap* PM, SM* sm) {
-  return (sm >= (((SM**)(PM->distinguished_maps))[0]) &&
-          sm <= (((SM**)(PM->distinguished_maps))[PM->num_distinguished - 1]));
+  return (sm >= (DMAP(PM)[0]) &&
+          sm <= (DMAP(PM)[PM->num_distinguished - 1]));
 }
 
 INLINE
@@ -23,13 +23,13 @@ SM* copy_for_writing(SM* dist_SM) {
 
 INLINE
 SM* get_SM_for_reading(ShadowMap *PM, Addr a) {
-  return ((SM**)PM->map)[a >> 16];
+  return MAP(PM)[a >> 16];
 }
 
 INLINE
 SM* get_SM_for_writing(ShadowMap *PM, Addr a) {
   //SM** sm_p = &PM[a >> 16]; // bits [31..16]
-  SM** sm_p = &(((SM**)PM->map)[a & 0xffff0000]); // bits [31..16]
+  SM** sm_p = &(MAP(PM)[a & 0xffff0000]); // bits [31..16]
   if (is_DSM(PM, *sm_p))
     *sm_p = copy_for_writing(*sm_p);
   return *sm_p;
@@ -49,11 +49,28 @@ void shadow_set_meta_bits(ShadowMap *PM, Addr a, U8  mbits) {
 
 INLINE
 void shadow_initialize_map(ShadowMap* PM) {
-
+  int i;
+  DMAP(PM) = shadow_calloc(NDIST(PM), sizeof(SM*)); // allocate array of distinguished maps
+  for (i = 0; i < NDIST(PM); i++) {
+    DMAP(PM)[i] = shadow_calloc(1, sizeof(SM)); // allocate each distinguished map
+  }
+  MAP(PM) = shadow_malloc(KB_64 * sizeof(U8));
+  for (i = 0; i < KB_64; i++) {
+    MAP(PM)[i] = DMAP(PM)[0]; // TODO: figure out which distinguished map to use
+  }
 }
 
 INLINE
 void shadow_destroy_map(ShadowMap* PM) {
-
+  int i;
+  for (i = 0; i < KB_64; i++) {
+    if (! is_DSM(PM, MAP(PM)[i]))
+      free(MAP(PM)[i]); // free all allocated (non-distinguished) maps)
+  }
+  for (i = 0; i < NDIST(PM); i++) {
+    free(DMAP(PM)[i]);
+  }
+  free(MAP(PM));  // free the map array
+  free(DMAP(PM)); // free the distinguished map array
 }
 

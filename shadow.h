@@ -35,7 +35,9 @@ void shadow_initialize_map(ShadowMap* PM);
 void shadow_destroy_map(ShadowMap* PM);
 
 // Application needs to explicitly determine how system calls are made
+extern void  free(void* addr);
 extern void* shadow_malloc(size_t size);
+extern void* shadow_calloc(size_t nmemb, size_t size);
 extern void  out_of_memory();
 extern void  mem_copy(void* dst, void* src, size_t size);
 

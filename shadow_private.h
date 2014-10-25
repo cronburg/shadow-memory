@@ -16,6 +16,11 @@ typedef struct {
   U8 mbits[KB_64];
 } SM;
 
+// Macros for accessing map fields of primary shadow map struct:
+#define MAP(PM)   ((SM**)(PM->map))
+#define DMAP(PM)  ((SM**)(PM->distinguished_maps))
+#define NDIST(PM) (PM->num_distinguished)
+
 // Whether or not the given SM is the "distinguished" secondary map
 // UNDEFINED DSM is what all PM entries point to initially before any
 // memory accesses occur. 
