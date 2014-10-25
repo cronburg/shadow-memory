@@ -22,7 +22,10 @@ int main(int argc, char *argv[]) {
   my_sm->num_distinguished = 1;
   shadow_initialize_map(my_sm);
   
-  
+  shadow_set_meta_bits(my_sm, 0, (U8)0xab);
+  U8 tmp;
+  shadow_get_meta_bits(my_sm, 0, &tmp);
+  printf("U8 tmp = %x\n", tmp);
 
   shadow_destroy_map(my_sm);
   free(my_sm);
