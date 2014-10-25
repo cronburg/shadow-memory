@@ -50,13 +50,19 @@ void shadow_set_meta_bits(ShadowMap *PM, Addr a, U8  mbits) {
 INLINE
 void shadow_initialize_map(ShadowMap* PM) {
   int i;
-  DMAP(PM) = shadow_calloc(NDIST(PM), sizeof(SM*)); // allocate array of distinguished maps
+  PM->distinguished_maps = shadow_calloc(NDIST(PM), sizeof(SM*)); // allocate array of distinguished maps
+  PM->map = shadow_malloc(KB_64 * sizeof(SM*));
   for (i = 0; i < NDIST(PM); i++) {
     DMAP(PM)[i] = shadow_calloc(1, sizeof(SM)); // allocate each distinguished map
   }
-  MAP(PM) = shadow_malloc(KB_64 * sizeof(U8));
   for (i = 0; i < KB_64; i++) {
-    MAP(PM)[i] = DMAP(PM)[0]; // TODO: figure out which distinguished map to use
+    //printf("curr=0x%p, dmap[0]=0x%p, sizeof(U8)=%d\n", &MAP(PM)[i], DMAP(PM)[0],
+    //       (int)sizeof(U8));
+    MAP(PM)[i] = DMAP(PM)[0];
+    //printf("%p, %p\n", &((SM**)(PM->map))[i], DMAP(PM)[0]);
+    //SM* lvalue = &(((SM**)(PM->map))[i]);
+    //*lvalue = DMAP(PM)[0];
+    //MAP(PM)[i] = DMAP(PM)[0]; // TODO: figure out which distinguished map to use
   }
 }
 
