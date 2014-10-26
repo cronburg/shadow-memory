@@ -155,7 +155,7 @@ main(int argv, char** args)
     printf("%d ", A[i]);
   }
   printf("\n");
-  shim_free(A);
+  //shim_free(A);
 
   shadow_destroy_map(my_sm);
   free(my_sm);
