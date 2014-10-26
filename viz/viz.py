@@ -2,6 +2,7 @@
 from pylab import *
 from matplotlib.ticker import FuncFormatter
 
+snapshots = []
 execfile("snapshots.dat")
 mn = min(map(min, snapshots))
 mx = max(map(max, snapshots))
