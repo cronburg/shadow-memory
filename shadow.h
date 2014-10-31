@@ -19,6 +19,12 @@
 #define DATA_META_8   0xff // 1111 binary
 //#define DATA_OBJECT_8     0x2 // 10 binary
 
+// Compression schemes:
+#define SHADOW_NO_COMPRESSION   0x00 // uncompressed shadow map data structure
+#define SHADOW_FAST_COMPRESSION 0x01 // minimal time complexity (TODO: decide algorithm)
+#define SHADOW_SLOW_COMPRESSION 0x02 // minimal space complexity (TODO: algorithm)
+// ...
+
 typedef unsigned char U8; //UChar;
 typedef int Addr;
 typedef struct {
@@ -30,6 +36,7 @@ typedef struct {
   void* map;                // pointer to the primary shadow map
   void* distinguished_maps; // pointer to distinguished maps
   short num_distinguished;  // # of distinguished maps
+  short compression_scheme; // what kind of compression to use
 } ShadowMap;
 
 // Two primary shadow map operations (get and set)
@@ -44,6 +51,8 @@ void shadow_destroy_map(ShadowMap* PM);
 void snapshot(ShadowMap* PM);
 
 // Application needs to explicitly determine how system calls are made
+// TODO: Create a template which can be included if the user does not
+//       require this.
 extern void  free(void* addr);
 extern void* shadow_malloc(size_t size);
 extern void* shadow_calloc(size_t nmemb, size_t size);
