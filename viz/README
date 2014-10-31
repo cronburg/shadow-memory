@@ -1,1 +1,8 @@
 Visualization and presentation directory for mergesort snapshot results.
+
+TODO: Force-Directed Layout for memory addresses? Pull code from 150-viz
+repo. What to do with post-mortem memory allocation data? This is definitely
+a whole separate project in itself... However, should get a minimally
+working visualization, so as to motivate the usage of this library as an
+analysis tool.
+
