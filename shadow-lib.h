@@ -2,8 +2,8 @@
  * API / operations to perform on a shadow memory map  (based on memcheck)
  **/
 
-#ifndef shadow_h__
-#define shadow_h__
+#ifndef shadow_lib_h__
+#define shadow_lib_h__
 
 // The possible states of memory:
 #define DATA_UNDEF    0x0 // 00 binary
@@ -39,7 +39,7 @@ void shadow_destroy_map(ShadowMap* PM);
 void  shadow_free(void* addr);
 void* shadow_malloc(SizeT size);
 void* shadow_calloc(SizeT nmemb, SizeT size);
-void  shadow_out_of_memory();
+void  shadow_out_of_memory(void);
 void  shadow_memcpy(void* dst, void* src, SizeT size);
 
-#endif // shadow_h__
+#endif // shadow_lib_h__

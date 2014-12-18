@@ -5,7 +5,7 @@
 #ifndef shadow_private_h__
 #define shadow_private_h__
 
-#include "shadow.h"
+#include "shadow-lib.h"
 
 #define KB_64        65536
 #define INLINE    inline __attribute__((always_inline))
