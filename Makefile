@@ -5,7 +5,7 @@ EXE=main merge
 
 all: $(EXE)
 
-shadow.o: shadow.c shadow_private.h shadow.h
+shadow.o: shadow.c shadow.h shadow-lib.c shadow-lib.h shadow_private.h
 	gcc -g -I${INCLUDE} -c -Wall -Werror -fpic shadow.c
 
 shadow.so: shadow.o

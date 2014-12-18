@@ -5,8 +5,6 @@
 #ifndef shadow_private_h__
 #define shadow_private_h__
 
-#include <stdio.h>  // TODO: get rid of this
-#include <stddef.h> // TODO: get rid of this?
 #include "shadow.h"
 
 #define KB_64        65536

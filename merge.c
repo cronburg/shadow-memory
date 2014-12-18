@@ -2,16 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stddef.h>
-#include "shadow.h"
 
-void  shadow_free(void* addr) { free(addr); }
-void *shadow_malloc(size_t size) { return malloc(size); }
-void *shadow_calloc(size_t nmemb, size_t size) { return calloc(nmemb, size); }
-void  mem_copy(void* dst, void* src, size_t size) { memcpy(dst,src,size); }
-void  out_of_memory() {
-  printf("ERROR: Ran out of memory while allocating shadow memory.\n");
-  exit(1);
-}
+#include "shadow.c"
 
 /* Future library code for snapshotting allocations */
 ShadowMap* my_sm;
@@ -90,7 +82,8 @@ merge_sort(int *A, int n)
   int *A1, *A2;
   int n1, n2;
 
-  snapshot(my_sm);
+  // TODO: better snapshot replacement
+  //snapshot(my_sm);
 
   if (n < 2)
     return;   /* the array is sorted when n=1.*/

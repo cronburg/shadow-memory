@@ -1,17 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "shadow.h"
 
-void  shadow_free(void* addr) { free(addr); }
-void *shadow_malloc(size_t size) { return malloc(size); }
-void *shadow_calloc(size_t nmemb, size_t size) { return calloc(nmemb, size); }
-void  mem_copy(void* dst, void* src, size_t size) { memcpy(dst,src,size); }
-void  out_of_memory() {
-  printf("ERROR: Ran out of memory while allocating shadow memory.\n");
-  exit(1);
-}
-
+#include "shadow.c"
 
 int main(int argc, char *argv[]) {
   printf("Entering main()\n");
