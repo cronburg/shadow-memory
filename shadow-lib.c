@@ -35,17 +35,40 @@ SM* get_SM_for_writing(ShadowMap *PM, Addr a) {
   return *sm_p;
 }
 
+// ----------------------------------------------------------------------------
+// Public getters and setters
+
 INLINE
-void shadow_get_meta_bits(ShadowMap *PM, Addr a, U8* mbits) {
+void shadow_get_bits(ShadowMap *PM, Addr a, U8* mbits) {
   SM* sm = get_SM_for_reading(PM, a);
   *mbits = sm->mbits[a & 0x0000ffff];
 }
 
 INLINE
-void shadow_set_meta_bits(ShadowMap *PM, Addr a, U8  mbits) {
+void shadow_set_bits(ShadowMap *PM, Addr a, U8  mbits) {
   SM* sm = get_SM_for_writing(PM, a);
   sm->mbits[a & 0x0000ffff] = mbits;
 }
+
+INLINE
+void shadow_mark_bit(ShadowMap *PM, Addr a, U8 offset) {
+  SM* sm = get_SM_for_writing(PM, a);
+  sm->mbits[a & 0x0000ffff] |= (1 << offset);
+}
+
+INLINE
+void shadow_unmark_bit(ShadowMap *PM, Addr a, U8 offset) {
+  SM* sm = get_SM_for_writing(PM, a);
+  sm->mbits[a & 0x0000ffff] &= ~(1 << offset);
+}
+
+INLINE
+void shadow_get_bit(ShadowMap *PM, Addr a, U8 offset, U8* bit) {
+  SM* sm = get_SM_for_writing(PM, a);
+  *bit = (sm->mbits[a & 0x0000ffff] & (1 << offset)) >> offset;
+}
+
+// ----------------------------------------------------------------------------
 
 INLINE
 void shadow_initialize_map(ShadowMap* PM) {

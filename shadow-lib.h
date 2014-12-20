@@ -26,9 +26,14 @@ typedef struct {
   short num_distinguished;  // # of distinguished maps
 } ShadowMap;
 
-// Two primary shadow map operations (get and set)
-void shadow_get_meta_bits(ShadowMap* PM, Addr a, U8* mbits);
-void shadow_set_meta_bits(ShadowMap* PM, Addr a, U8  mbits);
+// Two primary shadow map operations (get and set a byte)
+void shadow_get_bits(ShadowMap* PM, Addr a, U8* mbits);
+void shadow_set_bits(ShadowMap* PM, Addr a, U8  mbits);
+
+// set, unset, and get individual bits:
+void shadow_mark_bit  (ShadowMap* PM, Addr a, U8 offset);
+void shadow_umark_bit (ShadowMap* PM, Addr a, U8 offset);
+void shadow_get_bit   (ShadowMap* PM, Addr a, U8 offset, U8* bit);
 
 // Initialize and destroy. Initialize sets up the primary map and any distinguished maps.
 // Destroy frees any memory malloc'd as part of the maps.
