@@ -12,7 +12,7 @@ void* shim_malloc(size_t size) {
   void* ret = malloc(size);
   int i;
   for (i = 0; i < size; i++) {
-    shadow_set_meta_bits(my_sm, (int)ret + i, (U8)0xff);
+    shadow_set_meta_bits(my_sm, (long int)ret + i, (U8)0xff);
   }
   return ret;
 }
@@ -22,10 +22,10 @@ void shim_free(void* ptr) {
   int i = 0;
   U8 curr;
   while (1) {
-    shadow_get_meta_bits(my_sm, (int)ptr + i, &curr);
+    shadow_get_meta_bits(my_sm, (long int)ptr + i, &curr);
     if (curr != 0xff)
       break;
-    shadow_set_meta_bits(my_sm, (int)ptr + i, 0x00);
+    shadow_set_meta_bits(my_sm, (long int)ptr + i, 0x00);
     i++;
   }
 

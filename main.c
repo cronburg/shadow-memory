@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "shadow.c"
 
@@ -17,6 +18,7 @@ int main(int argc, char *argv[]) {
   U8 tmp;
   shadow_get_meta_bits(my_sm, 0, &tmp);
   printf("U8 tmp = 0x%x\n", tmp);
+  assert(tmp == (U8)0xab);
 
   shadow_destroy_map(my_sm);
   free(my_sm);
