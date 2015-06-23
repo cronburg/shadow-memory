@@ -14,7 +14,7 @@ Int is_DSM(ShadowMap* PM, SM* sm) {
 
 INLINE
 SM* copy_for_writing(SM* dist_SM) {
-  SM* new_SM = (void*)shadow_malloc(sizeof(SM));
+  SM* new_SM = (SM*)shadow_malloc(sizeof(SM));
   if (new_SM == NULL)
     shadow_out_of_memory();
   shadow_memcpy((void*)new_SM, (void*)dist_SM, sizeof(SM));
@@ -76,7 +76,7 @@ void shadow_initialize_map(ShadowMap* PM) {
   PM->distinguished_maps = shadow_calloc(NDIST(PM), sizeof(SM*)); // allocate array of distinguished maps
   PM->map = shadow_malloc(KB_64 * sizeof(SM*));
   for (i = 0; i < NDIST(PM); i++) {
-    DMAP(PM)[i] = shadow_calloc(sizeof(SM), 1); // allocate each distinguished map
+    DMAP(PM)[i] = (SM*)shadow_calloc(sizeof(SM), 1); // allocate each distinguished map
   }
   for (i = 0; i < KB_64; i++) {
     MAP(PM)[i] = DMAP(PM)[0];
