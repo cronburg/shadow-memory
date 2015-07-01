@@ -55,8 +55,15 @@ removing "shadow.h" all-together, and replacing each system call in
 becomes `VG_(free)(addr)`, and in general `syscall(...)` becomes
 `VG_(syscall)(...)`.
 
-A Valgrind tool relying on this library will be made available in the
+~~A Valgrind tool relying on this library will be made available in the
 near future. This use case is currently the primary motivation behind
 development of this library, however we hope to keep the interface as
-general as possible.
+general as possible.~~
+
+PIN Use Case
+------------
+
+This library has been updated for inclusion into pintools, with the obvious
+advantage over Valgrind that we have direct access to standard libraries
+(`free`, `malloc`, and `syscall(...)` in general).
 
