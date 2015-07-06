@@ -8,7 +8,12 @@
 #include "shadow-lib.h"
 
 #define KB_64        65536
+
+#ifndef DEBUG
 #define INLINE    inline __attribute__((always_inline))
+#else
+#define INLINE
+#endif
 
 // Secondary Map structure
 typedef struct {
