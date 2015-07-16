@@ -2,8 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-
-#include "shadow.c"
+#include "shadow.h"
 
 #define print(u8) printf("tmp = 0x%x\n", u8)
 #define getbyte(addr,u8) shadow_get_bits(my_sm, addr, &u8)

@@ -1,10 +1,8 @@
 /**
  * API / operations to perform on a shadow memory map  (based on memcheck)
  **/
-
 #ifndef shadow_private_h__
 #define shadow_private_h__
-
 #include "shadow-lib.h"
 
 #define KB_64        65536

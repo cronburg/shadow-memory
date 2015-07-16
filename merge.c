@@ -2,8 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stddef.h>
-
-#include "shadow.c"
+#include "shadow.h"
 
 /* Future library code for snapshotting allocations */
 ShadowMap* my_sm;
