@@ -11,7 +11,7 @@
 
 typedef int Int;
 typedef size_t SizeT;
-typedef int Addr;
+typedef unsigned long int Addr;
 #include "shadow-lib.h"
 
 void  shadow_free(void* addr) { free(addr); }

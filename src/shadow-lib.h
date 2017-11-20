@@ -118,8 +118,9 @@ void shadow_initialize_map(ShadowMap* PM) {
   Int i;
   PM->distinguished_maps = shadow_calloc(NDIST(PM), sizeof(SM*)); // allocate array of distinguished maps
   PM->map = shadow_malloc(KB_64 * sizeof(SM*));
+  SM* dist_maps = shadow_calloc(sizeof(SM), NDIST(PM));
   for (i = 0; i < NDIST(PM); i++) {
-    DMAP(PM)[i] = (SM*)shadow_calloc(sizeof(SM), 1); // allocate each distinguished map
+    DMAP(PM)[i] = &(dist_maps[i]); // allocate each distinguished map
   }
   for (i = 0; i < KB_64; i++) {
     MAP(PM)[i] = DMAP(PM)[0];
