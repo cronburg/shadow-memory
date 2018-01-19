@@ -3,6 +3,7 @@
 *.so
 main
 main-opt
+main-mmap
 merge
 merge-opt
 *.o

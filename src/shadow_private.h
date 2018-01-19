@@ -3,7 +3,7 @@
  **/
 #ifndef shadow_private_h__
 #define shadow_private_h__
-#include "shadow-lib.h"
+//#include "shadow-lib.h"
 
 #define KB_64        65536
 
