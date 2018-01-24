@@ -26,11 +26,6 @@ void  shadow_out_of_memory() {
 // >>> hex(2**35 - 1)
 //#define LOW_HALF_BITS 0x00000007ffffffff
 
-typedef union {
-  Middle m;
-  Low l;
-} MiddleLow;
-
 // >>> hex(2**18 - 1)
 #define LOW_BITS 0x3ffff
 typedef struct { U8 bits[262144]; } Low; // 2**18 bits (bit for bit shadow map)
@@ -39,9 +34,14 @@ typedef struct { U8 bits[262144]; } Low; // 2**18 bits (bit for bit shadow map)
 #define MIDDLE_BITS 0x7fffc0000
 typedef struct { Low* bits[131072]; } Middle; // 2**17 pointers
 
+typedef union {
+  Middle* m;
+  Low* l;
+} MiddleLowPtr;
+
 // >>> hex(2**64 - 2**(17+18))
 #define HIGH_BITS 0xfffffff800000000
-typedef struct { MiddleLow* bits[536870912]; } High; // 2**29 pointers
+typedef struct { MiddleLowPtr bits[536870912]; } High; // 2**29 pointers
 
 // >>> hex(0xfffffff800000000 + 0x7fffc0000 + 0x3ffff)
 // '0xffffffffffffffff'
@@ -49,6 +49,7 @@ typedef struct { MiddleLow* bits[536870912]; } High; // 2**29 pointers
 typedef struct {
   High* map;              // pointer to the primary shadow map
   Low* distinguished_map; // pointer to the (only) distinguished map
+  Middle* distinguished_middle;
 } ShadowMap;
 
 // ----------------------------------------------------------------------------
@@ -59,7 +60,7 @@ typedef struct {
 #endif
 
 // Macros for accessing map fields of primary shadow map struct:
-#define MAP(PM)   (PM->map->bits)
+#define BITS(PM)   (PM->map->bits)
 #define DMAP(PM)  (PM->distinguished_map)
 
 // Allocates and initializes a new Low
@@ -82,14 +83,23 @@ Low* copy_for_writing(Low* dist_Low) {
 
 INLINE
 Low* get_Low_for_reading(ShadowMap *PM, Addr a) {
-  return ((MAP(PM)[a >> 35])->bits)[a & MIDDLE_BITS];
+  MiddleLowPtr ml = BITS(PM)[a >> 35];
+  if (ml.l == DMAP(PM))
+    return ml.l;
+  return (ml.m->bits)[(a & MIDDLE_BITS) >> 18];
 }
 
 INLINE
 Low* get_Low_for_writing(ShadowMap *PM, Addr a) {
-  //Low** low_p = &PM[a >> 16]; // bits [31..16]
-  Low** low = &(((MAP(PM)[a >> 35])->bits)[a & MIDDLE_BITS]);
-  if (low == DMAP(PM))
+  MiddleLowPtr* ml = &(BITS(PM)[a >> 35]);
+  if (ml->l == DMAP(PM)) {
+    ml->m = (Middle*)shadow_malloc(sizeof(Middle));
+    printf("(ml->m, ml) = (%p, %p)\n", ml->m, ml);
+    memcpy(ml->m, PM->distinguished_middle, sizeof(Middle));
+  }
+  printf("(ml->m, ml) = (%p, %p)\n", ml->m, ml);
+  Low** low = &(ml->m->bits[(a & MIDDLE_BITS) >> 18]);
+  if (*low == DMAP(PM))
     *low = copy_for_writing(*low);
   return *low;
 }
@@ -127,19 +137,33 @@ void shadow_get_bit(ShadowMap *PM, Addr a, U8 offset, U8* bit) {
 INLINE
 void shadow_initialize_map(ShadowMap* PM) {
   SizeT i;
+
+  // mmap allocate virtual space of the primary map.
   PM->map = mmap(NULL, 4294967296, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
   if (PM->map == MAP_FAILED) {
     perror("Failed to allocate primary map.");
     return;
   }
+
+  // Allocate the distinguished low map and have all entries of the primary map
+  // point to it by memcpy-ing the contents of an array pointing to it.
   DMAP(PM) = (Low*) shadow_calloc(1, sizeof(Low));
-  High* src[4096];
+  Low* src[4096];
   for (i = 0; i < 4096; i++) {
-    src[i] = (High*)(DMAP(PM));
+    src[i] = DMAP(PM);
   }
   // units(i) = bytes, units(memcpy) = bytes
   for (i = 0; i < 4294967296; i += 4096 * 8) {
-    memcpy((PM->map) + i, src, 4096 * 8);
+    printf("(& BITS(PM)) + i = %p\n", (void*)(& BITS(PM)) + i);
+    memcpy((void*)(& BITS(PM)) + i, (void*)src, 4096 * 8);
+  }
+  printf("&(BITS(PM)) = [%p, %p]\n", &(BITS(PM)), (void*)&(BITS(PM)) + 4294967296);
+
+  // Set the distinguished middle map to have all entries pointing to the
+  // (single) distinguished low map.
+  PM->distinguished_middle = (Middle*) shadow_malloc(sizeof(Middle));
+  for (i = 0; i < 131072; i++) {
+    PM->distinguished_middle->bits[i] = DMAP(PM);
   }
 }
 

@@ -28,10 +28,11 @@ int main(int argc, char *argv[]) {
   getbyte(0xBEEF,tmp); print(tmp); assert(tmp == (U8)0x04);
   getbit (0xBEEF,2,tmp); assert(tmp == 1);
   
-  shadow_set_bits(my_sm, 0xAAFF0000FFFF0000, (U8)0x00);
-  shadow_mark_bit(my_sm, 0xAAFF0000FFFF0000, 3);
-  getbyte(0xAAFF0000FFFF0000,tmp); print(tmp); assert(tmp == (U8)0x04);
-  getbit (0xAAFF0000FFFF0000,3,tmp); assert(tmp == 1);
+  printf("----\n");
+  shadow_set_bits(my_sm, 0xAAFF00AAFFFF0000, (U8)0x00);
+  shadow_mark_bit(my_sm, 0xAAFF00AAFFFF0000, 2);
+  getbyte(0xAAFF00AAFFFF0000,tmp); print(tmp); assert(tmp == (U8)0x04);
+  getbit (0xAAFF00AAFFFF0000,2,tmp); assert(tmp == 1);
 
   shadow_destroy_map(my_sm);
   free(my_sm);
