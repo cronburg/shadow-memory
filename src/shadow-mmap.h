@@ -61,10 +61,14 @@ Low* copy_for_writing(Low* dist_Low) {
 
 INLINE
 Low* get_Low_for_reading(ShadowMap *PM, Addr a) {
-  MiddleLowPtr ml = BITS(PM)[a >> 35];
+  SizeT idx = a >> 35;
+  assert(idx < 536870912);
+  MiddleLowPtr ml = BITS(PM)[idx];
   if (ml.l == DMAP(PM))
     return ml.l;
-  return (ml.m->bits)[(a & MIDDLE_BITS) >> 18];
+  idx = (a & MIDDLE_BITS) >> 18;
+  assert(idx < 131072);
+  return (ml.m->bits)[idx];
 }
 
 INLINE
@@ -74,7 +78,9 @@ Low* get_Low_for_writing(ShadowMap *PM, Addr a) {
     ml->m = (Middle*)shadow_malloc(sizeof(Middle));
     memcpy(ml->m, PM->distinguished_middle, sizeof(Middle));
   }
-  Low** low = &(ml->m->bits[(a & MIDDLE_BITS) >> 18]);
+  SizeT idx = (a & MIDDLE_BITS) >> 18;
+  assert(idx < 131072);
+  Low** low = &(ml->m->bits[idx]);
   if (*low == DMAP(PM))
     *low = copy_for_writing(*low);
   return *low;
@@ -83,31 +89,41 @@ Low* get_Low_for_writing(ShadowMap *PM, Addr a) {
 INLINE
 void shadow_get_bits(ShadowMap *PM, Addr a, U8* mbits) {
   Low* low = get_Low_for_reading(PM, a);
+  SizeT idx = a & LOW_BITS;
+  assert(idx < 262144);
   *mbits = low->bits[a & LOW_BITS];
 }
 
 INLINE
 void shadow_set_bits(ShadowMap *PM, Addr a, U8  mbits) {
   Low* low = get_Low_for_writing(PM, a);
-  low->bits[a & LOW_BITS] = mbits;
+  SizeT idx = a & LOW_BITS;
+  assert(idx < 262144);
+  low->bits[idx] = mbits;
 }
 
 INLINE
 void shadow_mark_bit(ShadowMap *PM, Addr a, U8 offset) {
   Low* low = get_Low_for_writing(PM, a);
-  low->bits[a & LOW_BITS] |= (1 << offset);
+  SizeT idx = a & LOW_BITS;
+  assert(idx < 262144);
+  low->bits[idx] |= (1 << offset);
 }
 
 INLINE
 void shadow_unmark_bit(ShadowMap *PM, Addr a, U8 offset) {
   Low* low = get_Low_for_writing(PM, a);
-  low->bits[a & LOW_BITS] &= ~(1 << offset);
+  SizeT idx = a & LOW_BITS;
+  assert(idx < 262144);
+  low->bits[idx] &= ~(1 << offset);
 }
 
 INLINE
 void shadow_get_bit(ShadowMap *PM, Addr a, U8 offset, U8* bit) {
   Low* low = get_Low_for_writing(PM, a);
-  *bit = (low->bits[a & LOW_BITS] & (1 << offset)) >> offset;
+  SizeT idx = a & LOW_BITS;
+  assert(idx < 262144);
+  *bit = (low->bits[idx] & (1 << offset)) >> offset;
 }
 
 #define HIGH_SIZE 4294967296
