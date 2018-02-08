@@ -151,7 +151,7 @@ void shadow_initialize_map(ShadowMap* PM) {
   }
   // units(i) = bytes, units(memcpy) = bytes
   for (i = 0; i < HIGH_SIZE; i += 4096 * 8) {
-    memcpy((void*)(& BITS(PM)) + i, (void*)src, 4096 * 8);
+    memcpy((char*)(& BITS(PM)) + i, (void*)src, 4096 * 8);
   }
 
   // Set the distinguished middle map to have all entries pointing to the
@@ -165,7 +165,7 @@ void shadow_initialize_map(ShadowMap* PM) {
 INLINE
 void shadow_initialize_with_memory(void* mem, ShadowMap* PM) {
   // TODO: assert good alignment
-  PM->map = mem;
+  PM->map = (High*)mem;
   DMAP(PM) = (Low*)(((char*)mem) + HIGH_SIZE);
   memset(DMAP(PM), 0, LOW_SIZE);
   PM->distinguished_middle = (Middle*)(((char*)mem) + HIGH_SIZE + LOW_SIZE);
@@ -174,7 +174,7 @@ void shadow_initialize_with_memory(void* mem, ShadowMap* PM) {
 
 INLINE
 void shadow_initialize_with_mmap(ShadowMap* PM) {
-  PM->map = mmap(NULL, HIGH_SIZE, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+  PM->map = (High*)mmap(NULL, HIGH_SIZE, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
   DMAP(PM) = (Low*) shadow_calloc(1, LOW_SIZE);
   PM->distinguished_middle = (Middle*) shadow_malloc(MID_SIZE);
   shadow_initialize_map(PM);

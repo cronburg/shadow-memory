@@ -31,7 +31,7 @@ void  shadow_out_of_memory() {
 }
 // ----------------------------------------------------------------------------
 
-#include "shadow-mmap.h"
+#include "shadow-64.h"
 
 #define print(u8) printf("tmp = 0x%x\n", u8)
 #define getbyte(addr,u8) shadow_get_bits(my_sm, addr, &u8)
