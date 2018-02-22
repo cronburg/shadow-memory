@@ -1,7 +1,7 @@
 
 INCLUDE=.
 LIB=.
-EXE=main merge main-opt merge-opt main-64
+EXE=main merge main-opt merge-opt main-64 main-32
 
 # Default to intel64 target:
 ifndef $(TARGET)
@@ -40,9 +40,12 @@ merge-opt: merge.c shadow.h
 	gcc $(ARCH_FLAGS) -g ${FLAGS} -I${INCLUDE} -Wall -o merge-opt merge.c
 
 ##############################################################################
-# Compile 64-bit mmap version:
+# Compile 64 and 32 bit mmap versions:
 main-64: main-64.c shadow-64.h
 	gcc $(ARCH_FLAGS) -g ${FLAGS} -I${INCLUDE} -Wall -o main-64 main-64.c
+
+main-32: main-32.c shadow-32.h
+	gcc -m32 ${FLAGS} -I${INCLUDE} -Wall -o main-32 -Og -ggdb3 main-32.c
 
 clean:
 	rm -f *.gch *.o *.so $(EXE)
