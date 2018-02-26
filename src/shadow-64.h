@@ -70,14 +70,14 @@ Low* copy_for_writing(Low* low);
 Low* get_Low_for_reading(ShadowMap *PM, Addr a);
 Low* get_Low_for_writing(ShadowMap *PM, Addr a);
 
-void shadow_get_bits(ShadowMap *PM, Addr a, U8* mbits);
-void shadow_set_bits(ShadowMap *PM, Addr a, U8  mbits);
-void shadow_mark_bit(ShadowMap *PM, Addr a, U8 offset);
-void shadow_unmark_bit(ShadowMap *PM, Addr a, U8 offset);
-void shadow_get_bit(ShadowMap *PM, Addr a, U8 offset, U8* bit);
-void shadow_initialize_map(ShadowMap* PM);
-void shadow_initialize_with_memory(Addr mem, ShadowMap* PM);
-void shadow_initialize_with_mmap(ShadowMap* PM);
-void shadow_destroy_map(ShadowMap* PM);
+extern void shadow_get_bits(ShadowMap *PM, Addr a, U8* mbits);
+extern void shadow_set_bits(ShadowMap *PM, Addr a, U8  mbits);
+extern void shadow_mark_bit(ShadowMap *PM, Addr a, U8 offset);
+extern void shadow_unmark_bit(ShadowMap *PM, Addr a, U8 offset);
+extern void shadow_get_bit(ShadowMap *PM, Addr a, U8 offset, U8* bit);
+extern void shadow_initialize_map(ShadowMap* PM);
+extern void shadow_initialize_with_memory(Addr mem, ShadowMap* PM);
+extern void shadow_initialize_with_mmap(ShadowMap* PM);
+extern void shadow_destroy_map(ShadowMap* PM);
 
 #endif // shadow_mmap_h__
