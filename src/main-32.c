@@ -16,11 +16,6 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 
-typedef int Int;
-typedef size_t SizeT;
-typedef unsigned long int Addr;
-typedef unsigned char U8; //UChar;
-
 void  shadow_free(void* addr) { free(addr); }
 void *shadow_malloc(size_t size) { return malloc(size); }
 void *shadow_calloc(size_t nmemb, size_t size) { return calloc(nmemb, size); }
