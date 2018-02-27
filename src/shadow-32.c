@@ -74,7 +74,7 @@ void shadow_initialize_map(ShadowMap* PM) {
   // mmap allocate virtual space of the primary map.
   //PM->map = mmap(NULL, HIGH_SIZE, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
   if (PM->map == MAP_FAILED) {
-    perror("Failed to allocate primary map.");
+    perror("Failed to allocate primary map");
     return;
   }
 
