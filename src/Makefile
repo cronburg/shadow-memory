@@ -1,7 +1,7 @@
 
 INCLUDE=.
 LIB=.
-EXE=main merge main-opt merge-opt main-64 main-32
+EXE=main merge main-opt merge-opt main-64 main-32 main-32-word
 
 # Default to intel64 target:
 ifndef $(TARGET)
@@ -29,6 +29,9 @@ shadow-64.o: shadow-64.c shadow-64.h
 shadow-32.o: shadow-32.c shadow-32.h
 	gcc -m32 $(ARCH_FLAGS) -g -I${INCLUDE} -c -Wall -Werror -fpic shadow-32.c
 
+shadow-32-word.o: shadow-32-word.c shadow-32-word.h
+	gcc -m32 $(ARCH_FLAGS) -g -I${INCLUDE} -c -Wall -Werror -fpic shadow-32-word.c
+
 ##############################################################################
 # Compile without inlining (via shared object file):
 main: main.c shadow.h shadow.so
@@ -52,6 +55,9 @@ main-64: main-64.c shadow-64.o
 
 main-32: main-32.c shadow-32.o
 	gcc -m32 ${FLAGS} -I${INCLUDE} -Wall shadow-32.o -o main-32 -Og -ggdb3 main-32.c
+
+main-32-word: main-32-word.c shadow-32-word.o
+	gcc -m32 ${FLAGS} -I${INCLUDE} -Wall shadow-32-word.o -o main-32-word -Og -ggdb3 main-32-word.c
 
 clean:
 	rm -f *.gch *.o *.so $(EXE)
