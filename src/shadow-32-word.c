@@ -36,6 +36,20 @@ void shadow_word_get_bits(ShadowMap *PM, Addr a, U32* mbits) {
 }
 
 INLINE
+void shadow_word_iterate(ShadowMap *PM, void (*fncn)(Addr, U32)) {
+  for (SizeT idx = 0; idx < HIGH_COUNT; idx++) {
+    Low *low = BITS(PM)[idx];
+    if (low != DMAP(PM)) {
+      for (SizeT i = 0; i < LOW_COUNT; i++) {
+        if (low->bits[i] != 0) {
+          fncn((Addr)(idx << NUM_LOW_BITS) | (Addr)i, (U32)(low->bits[i]));
+        }
+      }
+    }
+  }
+}
+
+INLINE
 void shadow_word_set_bits(ShadowMap *PM, Addr a, U32  mbits) {
   Low* low = word_get_Low_for_writing(PM, a);
   SizeT idx = a & LOW_BITS;
@@ -103,6 +117,7 @@ void shadow_word_initialize_with_memory(Addr mem, ShadowMap* PM) {
 
 INLINE
 void shadow_word_initialize_with_mmap(ShadowMap* PM) {
+  // TODO this should be a shadow_mmap?
   PM->map = (High*)mmap(NULL, HIGH_SIZE, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
   DMAP(PM) = (Low*) shadow_calloc(1, LOW_SIZE);
   shadow_word_initialize_map(PM);
