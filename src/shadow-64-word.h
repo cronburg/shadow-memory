@@ -1,5 +1,5 @@
-#ifndef shadow_64_h__
-#define shadow_64_h__
+#ifndef shadow_64_word_h__
+#define shadow_64_word_h__
 #include <stddef.h> 	// size_t
 #include <assert.h> 	// assert()
 #include <string.h> 	// memcpy()
@@ -10,6 +10,7 @@ typedef int Int;
 typedef size_t SizeT;
 typedef unsigned long long int Addr;
 typedef unsigned char U8;
+typedef unsigned long long int U64;
 
 // Application needs to explicitly determine how system calls are made
 void  shadow_free(void* addr);
@@ -25,7 +26,7 @@ void  shadow_memcpy(void* dst, void* src, SizeT size);
 #define NUM_LOW_BITS 18
 #define LOW_BITS 0x3ffff
 #define LOW_COUNT 262144 // = 8 * 2**18 bytes
-typedef struct { U8 bits[LOW_COUNT]; } Low; // 2**18 bytes (bit for bit shadow map)
+typedef struct { U64 bits[LOW_COUNT]; } Low; // 8 * 2**18 bytes (bit for bit shadow map)
 
 // >>> hex(2**(17+18) - 1 - (2**18 - 1))
 #define NUM_MIDDLE_BITS 17
@@ -70,20 +71,20 @@ typedef struct {
 #define DMAP(PM)  (PM->distinguished_map)
 
 // Allocates and initializes a new Low
-Low* copy_for_writing(Low* low);
+Low* word_copy_for_writing(Low* low);
 
 // Secondary Map getters (maps application address to which Low that address is in)
-Low* get_Low_for_reading(ShadowMap *PM, Addr a);
-Low* get_Low_for_writing(ShadowMap *PM, Addr a);
+Low* word_get_Low_for_reading(ShadowMap *PM, Addr a);
+Low* word_get_Low_for_writing(ShadowMap *PM, Addr a);
 
-extern void shadow_get_bits(ShadowMap *PM, Addr a, U8* mbits);
-extern void shadow_set_bits(ShadowMap *PM, Addr a, U8  mbits);
-extern void shadow_mark_bit(ShadowMap *PM, Addr a, U8 offset);
-extern void shadow_unmark_bit(ShadowMap *PM, Addr a, U8 offset);
-extern void shadow_get_bit(ShadowMap *PM, Addr a, U8 offset, U8* bit);
-extern void shadow_initialize_map(ShadowMap* PM);
-extern void shadow_initialize_with_memory(Addr mem, ShadowMap* PM);
-extern void shadow_initialize_with_mmap(ShadowMap* PM);
-extern void shadow_destroy_map(ShadowMap* PM);
+extern void shadow_word_get_bits(ShadowMap *PM, Addr a, U64* mbits);
+extern void shadow_word_set_bits(ShadowMap *PM, Addr a, U64  mbits);
+extern void shadow_word_mark_bit(ShadowMap *PM, Addr a, U8 offset);
+extern void shadow_word_unmark_bit(ShadowMap *PM, Addr a, U8 offset);
+extern void shadow_word_get_bit(ShadowMap *PM, Addr a, U8 offset, U8* bit);
+extern void shadow_word_initialize_map(ShadowMap* PM);
+extern void shadow_word_initialize_with_memory(Addr mem, ShadowMap* PM);
+extern void shadow_word_initialize_with_mmap(ShadowMap* PM);
+extern void shadow_word_destroy_map(ShadowMap* PM);
 
-#endif // shadow_64_h__
+#endif // shadow_64_word_h__
