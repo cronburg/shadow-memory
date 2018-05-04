@@ -5,7 +5,9 @@ Low* copy_for_writing(Low* dist_Low) {
   Low* new_Low = (Low*)shadow_malloc(sizeof(Low));
   if (new_Low == NULL)
     shadow_out_of_memory();
-  shadow_memcpy((void*)new_Low, (void*)dist_Low, sizeof(Low));
+  else {
+    shadow_memcpy((void*)new_Low, (void*)dist_Low, sizeof(Low));
+  }
   return new_Low;
 }
 
@@ -32,6 +34,7 @@ void shadow_get_bits(ShadowMap *PM, Addr a, U8* mbits) {
   Low* low = get_Low_for_reading(PM, a);
   SizeT idx = a & LOW_BITS;
   assert(idx < LOW_COUNT);
+  assert(low != NULL);
   *mbits = low->bits[idx];
 }
 
@@ -40,6 +43,8 @@ void shadow_set_bits(ShadowMap *PM, Addr a, U8  mbits) {
   Low* low = get_Low_for_writing(PM, a);
   SizeT idx = a & LOW_BITS;
   assert(idx < LOW_COUNT);
+  assert(low != NULL);
+  assert(idx >= 0);
   low->bits[idx] = mbits;
 }
 
